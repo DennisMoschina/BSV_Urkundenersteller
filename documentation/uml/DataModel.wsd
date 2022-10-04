@@ -1,0 +1,33 @@
+@startuml DataModel
+skinparam linetype auto
+
+class Certificate {
+    -place: int
+}
+Certificate -> Discipline : -discipline
+Certificate -> "1..2" Participant : -participant
+
+
+enum Gender {
+    MALE
+    FEMALE
+}
+
+enum DisciplineType {
+    SINGLE
+    DOUBLE
+    MIXED
+}
+
+class Discipline {
+    -age: int
+}
+Discipline --> DisciplineType : -type
+Discipline --> Gender : -gender
+
+class Participant {
+    -name: String
+    -club: String
+}
+
+@enduml

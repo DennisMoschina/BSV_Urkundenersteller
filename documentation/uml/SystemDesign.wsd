@@ -1,0 +1,26 @@
+@startuml SystemDesign
+
+frame View {
+    component HomeView
+    component BuildView
+    component ImportView
+}
+
+frame Controller {
+    component BuildController
+    component ImportController
+}
+
+frame Model {
+    component DataModel
+    
+    component CertificateBuilder
+    component ResultImporter
+}
+
+BuildController -(0- CertificateBuilder : buildCertificate
+BuildView -(0- BuildController : buildCertificate
+ImportView -(0- ImportController : importResults
+ImportController -(0- ResultImporter : importResults 
+
+@enduml

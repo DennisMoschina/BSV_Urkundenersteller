@@ -1,0 +1,7 @@
+@startuml LogicModelComponents
+
+[CertificateBuilder] -() BuildCertificate
+
+[CSVLoader] -() LoadCSV
+
+@enduml

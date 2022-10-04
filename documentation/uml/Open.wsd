@@ -1,0 +1,10 @@
+@startuml Open
+
+class FileChooser extends JFrame {
+}
+FileChooser -> FileChooserController : -controller
+
+class FileChooserController implements ActionListener {
+}
+
+@enduml
