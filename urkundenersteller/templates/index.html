@@ -1,0 +1,29 @@
+{% if messages %}
+    {% for message in messages %}
+        <div>
+            <strong>{{message|safe}}</strong>
+        </div>
+    {% endfor %}
+{% else %}
+
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <h1>Urkundenersteller</h1>
+
+        <label for="club_name">Verein:</label>
+        <input type="text" name="club_name" placeholder="BSV Eggenstein-Leopoldshafen">
+        <br>
+        <label for="tournament_name">Turnier:</label>
+        <input type="text" name="tournament_name" placeholder="C Rangliste">
+        <br>
+        <label for="date">Datum:</label>
+        <input type="date" name="date" placeholder="Datum">
+        <br>
+        <button type="submit">Erstellen</button>
+        <br>
+        <a href="/urkundenersteller/upload">CSV hochladen</a>
+    </form>
+
+{% endif %}

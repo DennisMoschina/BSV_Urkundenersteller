@@ -5,7 +5,6 @@
         </div>
     {% endfor %}
 {% else %}
-    {{ order }}
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <label>Upload a file</label>

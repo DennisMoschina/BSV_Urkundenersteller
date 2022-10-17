@@ -1,9 +1,9 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.core.files.uploadedfile import UploadedFile
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest
-
-import chardet
 
 from urkundenersteller import logic
 from urkundenersteller.models import Certificate
@@ -11,7 +11,21 @@ from urkundenersteller.models import Certificate
 
 # Create your views here.
 def index(request: HttpRequest):
-    return HttpResponse("This is the index")
+    template: str = "index.html"
+
+    if request.method == "POST":
+        data: dict = request.POST.dict()
+        club_name: str = data["club_name"]
+        tournament_name: str = data["tournament_name"]
+        tournament_date_str: str = data["date"]
+
+        club_name = club_name if club_name != '' else "BSV Eggenstein-Leopoldshafen"
+        date: datetime = datetime.strptime(tournament_date_str, "%Y-%m-%d") if tournament_date_str != ''\
+            else datetime.now()
+
+        logic.create_tournament(tournament_name, date)
+
+    return render(request, template)
 
 
 def upload_winner_csv(request: HttpRequest):

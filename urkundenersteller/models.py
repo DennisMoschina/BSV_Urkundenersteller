@@ -34,20 +34,35 @@ class Discipline:
     ageGroup: AgeGroup
     gender: Gender
 
+    def __init__(self, discipline_type: DisciplineType, age_group: AgeGroup, gender: Gender):
+        self.disciplineType = discipline_type
+        self.ageGroup = age_group
+        self.gender = gender
+
 
 class Tournament:
     name: str
     date: datetime.date
 
+    def __init__(self, name: str, date: datetime.date):
+        self.name = name
+        self.date = date
+
 
 class Club:
     name: str
 
+    def __init__(self, name: str):
+        self.name = name
+
 
 class Player:
-    firstName: str
-    lastName: str
+    name: str
     club: Club
+
+    def __init__(self, name: str, club: Club):
+        self.name = name
+        self.club = club
 
 
 class Certificate:
@@ -55,3 +70,9 @@ class Certificate:
     discipline: Discipline
     place: int
     players: list[Player]
+
+    def __init__(self, tournament: Tournament, discipline: Discipline, place: int, players: list[Player]):
+        self.tournament = tournament
+        self.discipline = discipline
+        self.place = place
+        self.players = players
