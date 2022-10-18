@@ -5,6 +5,10 @@ import chardet
 import pandas as pd
 import io
 
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import mm
+from reportlab.pdfgen.canvas import Canvas
+
 from urkundenersteller.models import AgeGroup
 from urkundenersteller.models import Certificate
 from urkundenersteller.models import Club
@@ -30,12 +34,12 @@ discipline_regex: str = f"(?P<dis_type_w_gender>(?P<gender>{gender_regex})(?P<di
                         f"|{discipline_type_regex_map[DisciplineType.MIXED]})" \
                         f" (?P<age_group>{age_group_regex})"
 
-tournament: Tournament = Tournament(name="Testturnier", date=datetime.date.today())
+tournament: Tournament = Tournament(name="Testturnier", date=datetime.date.today(), organizer=Club(name="Testverein"))
 
 
-def create_tournament(tournament_name: str, date: datetime.date):
+def create_tournament(tournament_name: str, date: datetime.date, organizer_name: str):
     global tournament
-    tournament = Tournament(name=tournament_name, date=date)
+    tournament = Tournament(name=tournament_name, date=date, organizer=Club(name=organizer_name))
 
 
 def parse_discipline_type(discipline_type_str: str) -> DisciplineType:
@@ -78,6 +82,23 @@ def parse_discipline(discipline_str: str) -> Discipline:
     gender: Gender = parse_gender(match.group("gender"))
 
     return Discipline(age_group=age_group, discipline_type=dis_type, gender=gender)
+
+
+def discipline_to_string(discipline: Discipline) -> str:
+    """
+    Create a String representation of the given discipline.
+    @param discipline: The discipline to create a String representation for.
+    @return: The String representation of the given discipline.
+    """
+
+    age_group_str: str = age_group_regex_map[discipline.ageGroup]
+
+    if discipline.disciplineType == DisciplineType.MIXED:
+        return f"Mixed {age_group_str}"
+
+    gender_str: str = "Jungen" if discipline.gender == Gender.MALE else "Mädchen"
+    discipline_type_str: str = "Doppel" if discipline.disciplineType == DisciplineType.DOUBLE else "Einzel"
+    return f"{gender_str}-{discipline_type_str} {age_group_str}"
 
 
 def parse_club(club_name: str) -> Club:
@@ -167,3 +188,47 @@ def parse_winner_input(file: bytes) -> list[Certificate]:
         certificates.extend(create_certificats_for_discipline(discipline, data_frame))
 
     return certificates
+
+
+def create_pdf_from_certificate(certificate: Certificate) -> bytes:
+    """
+    Creates a pdf from the given certificate.
+    @param certificate: The certificate to create a pdf from.
+    @return: The pdf as bytes.
+    """
+
+    resources_path: str = "urkundenersteller/resources"
+
+    pdf: Canvas = Canvas("Urkunde.pdf", pagesize=A4)
+
+    canvas_width: int = pdf._pagesize[0]
+    canvas_height: int = pdf._pagesize[1]
+
+    canvas_width_center: float = canvas_width / 2
+
+    for i in range(0, 7):
+        pdf.drawImage(f"{resources_path}/BSV_Logo.png", i * canvas_width / 7, canvas_height - 90, preserveAspectRatio=True, width=canvas_width / 7, height=canvas_width / 7)
+
+    pdf.setFontSize(96)
+    pdf.drawCentredString(canvas_width_center, canvas_height - 186, "Urkunde")
+
+    pdf.setFontSize(40)
+    pdf.drawCentredString(canvas_width_center, canvas_height - 256, certificate.tournament.name)
+
+    pdf.drawCentredString(canvas_width_center, canvas_height - 300, certificate.discipline.ageGroup.name)
+
+    pdf.setFontSize(16)
+    pdf.drawCentredString(canvas_width_center, 250, f"Ausrichter: {certificate.tournament.organizer.name}")
+
+    pdf.setFontSize(48)
+    pdf.drawCentredString(canvas_width_center, 200, discipline_to_string(certificate.discipline))
+
+    pdf.drawCentredString(canvas_width_center, 150, f"{certificate.place}. Platz")
+
+    pdf.setFontSize(60)
+    for i, player in enumerate(certificate.players):
+        pdf.drawCentredString(canvas_width_center, 100 + i * 60, player.name)
+
+    pdf.drawImage(f"{resources_path}/player_logo.png", canvas_width_center, 50)
+
+    pdf.save()

@@ -40,20 +40,22 @@ class Discipline:
         self.gender = gender
 
 
-class Tournament:
-    name: str
-    date: datetime.date
-
-    def __init__(self, name: str, date: datetime.date):
-        self.name = name
-        self.date = date
-
-
 class Club:
     name: str
 
     def __init__(self, name: str):
         self.name = name
+
+
+class Tournament:
+    name: str
+    date: datetime.date
+    organizer: Club
+
+    def __init__(self, name: str, date: datetime.date, organizer: Club):
+        self.name = name
+        self.date = date
+        self.organizer = organizer
 
 
 class Player:

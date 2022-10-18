@@ -7,7 +7,7 @@
 {% else %}
 
 
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
         <h1>Urkundenersteller</h1>
@@ -21,9 +21,10 @@
         <label for="date">Datum:</label>
         <input type="date" name="date" placeholder="Datum">
         <br>
-        <button type="submit">Erstellen</button>
+        <label>CSV-Datei der Platzierungen</label>
+        <input type="file" name="file"/>
         <br>
-        <a href="/urkundenersteller/upload">CSV hochladen</a>
+        <button type="submit">Hochladen</button>
     </form>
 
 {% endif %}
