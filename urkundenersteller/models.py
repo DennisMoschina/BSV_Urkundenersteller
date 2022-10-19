@@ -39,6 +39,16 @@ class Discipline:
         self.ageGroup = age_group
         self.gender = gender
 
+    def __str__(self):
+        age_group_str: str = self.ageGroup.name
+
+        if self.disciplineType == DisciplineType.MIXED:
+            return f"Mixed {age_group_str}"
+
+        gender_str: str = "Jungen" if self.gender == Gender.MALE else "Mädchen"
+        discipline_type_str: str = "Doppel" if self.disciplineType == DisciplineType.DOUBLE else "Einzel"
+        return f"{gender_str}-{discipline_type_str} {age_group_str}"
+
 
 class Club:
     name: str

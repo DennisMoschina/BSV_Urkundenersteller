@@ -19,6 +19,9 @@ from urkundenersteller.models import DisciplineType
 from urkundenersteller.models import Gender
 from urkundenersteller.models import Player
 from urkundenersteller.models import Tournament
+from urkundenersteller.reportlabUI.Text import Text
+from urkundenersteller.reportlabUI.View import View
+from urkundenersteller.resources.CertificateView import CertificateView
 
 gender_regex_map: dict[Gender, str] = {Gender.MALE: "J", Gender.FEMALE: "M"}
 discipline_type_regex_map: dict[DisciplineType, str] = {
@@ -216,65 +219,7 @@ def create_pdf_from_certificate(certificate: Certificate) -> bytes:
 
     pdf: Canvas = Canvas("Urkunde.pdf", pagesize=A4)
 
-    canvas_width: int = pdf._pagesize[0]
-    canvas_height: int = pdf._pagesize[1]
-
-    canvas_width_center: float = canvas_width / 2
-
-    format_file = open(format_resource)
-    format_json: dict[str, Any] = json.load(format_file)
-    format_file.close()
-
-    vertical_position: float = canvas_height
-
-    for key in format_json.keys():
-        element: dict[str, Any] = format_json[key]
-        assert isinstance(element, dict)
-        element_type: str = element["type"]
-
-        if element_type == "string":
-            text: str = element["text"]
-            style: dict[str, Any] = get_style_of_text(element["style"])
-            font_size: int = style["fontSize"]
-
-            vertical_position -= font_size
-            place_centred_text_on_pdf(pdf, text, canvas_width_center, vertical_position, font_size, style["font"])
-
-        if element_type == "f string":
-            element_text: str = element["text"]
-            text: str = eval(f'f"{element_text}"')      # this is a security risk
-            style: dict[str, Any] = get_style_of_text(element["style"])
-            font_size: int = style["fontSize"]
-            font: str = style["font"]
-
-            vertical_position -= font_size + style["padding"]
-            place_centred_text_on_pdf(pdf, text, canvas_width_center, vertical_position, font_size, font)
-            vertical_position -= style["padding"]
-
-        if element_type == "property":
-            element_text: str = element["text"]
-            element_text = "{" + element_text + "}"
-            text: str = eval(f'f"{element_text}"')      # this is a security risk
-
-            style: dict[str, Any] = get_style_of_text(element["style"])
-            font_size: int = style["fontSize"]
-            font: str = style["font"]
-
-            vertical_position -= font_size + style["padding"]
-            place_centred_text_on_pdf(pdf, text, canvas_width_center, vertical_position, font_size, font)
-            vertical_position -= style["padding"]
-
-        if element_type == "image":
-            pass
-        if element_type == "image banner":
-            image_path: str = element["image"]
-            image_path = f"{resources_path}/{image_path}"
-            width: float = canvas_width / int(element["count"])
-            aspect_ratio: (int, int) = element["aspectRatio"].split(":")
-            height: float = width / (int(aspect_ratio[0]) / int(aspect_ratio[1]))
-
-            vertical_position -= height
-            for i in range(int(element["count"])):
-                pdf.drawImage(image_path, i * width, vertical_position, width=width, height=height)
+    certificate_view: View = CertificateView(certificate)
+    certificate_view.render_view(pdf)
 
     pdf.save()
