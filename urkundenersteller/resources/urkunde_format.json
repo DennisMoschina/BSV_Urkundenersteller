@@ -1,0 +1,79 @@
+{
+  "image_banner": {
+    "type": "image banner",
+    "image": "BSV_Logo.png",
+    "count": 7,
+    "aspectRatio": "845:922"
+  },
+  "title": {
+    "type": "string",
+    "text": "Urkunde",
+    "style": {
+      "font": "Arial",
+      "fontSize": 96,
+      "color": "#FF0000",
+      "padding": 10
+    }
+  },
+  "tournament": {
+    "type": "property",
+    "text": "certificate.tournament.name",
+    "style": {
+      "font": "Arial",
+      "fontSize": 40,
+      "color": "#FF0000",
+      "padding": 10
+    }
+  },
+  "age_group": {
+    "type": "property",
+    "text": "certificate.discipline.ageGroup.name",
+    "style": {
+      "font": "Arial",
+      "fontSize": 40,
+      "color": "#FF0000",
+      "padding": 10
+    }
+  },
+  "organizer": {
+    "type": "f string",
+    "text": "Ausrichter: {certificate.tournament.organizer.name}",
+    "style": {
+      "font": "Arial",
+      "fontSize": 16,
+      "color": "#FF0000",
+      "padding": 10
+    }
+  },
+  "discipline": {
+    "type": "method reference",
+    "text": "discipline_to_string(certificate.discipline)",
+    "style": {
+      "font": "Arial",
+      "fontSize": 48,
+      "color": "#FF0000",
+      "padding": 10
+    }
+  },
+  "place": {
+    "type": "f string",
+    "text": "{certificate.place}. Platz",
+    "style": {
+      "font": "Arial",
+      "fontSize": 48,
+      "color": "#FF0000",
+      "padding": 10
+    }
+  },
+  "player_logo": {
+    "type": "image",
+    "resource": "player_logo.png",
+    "size": {
+      "width": 120,
+        "height": 179
+    },
+    "position": {
+      "alignment": "br"
+    }
+  }
+}

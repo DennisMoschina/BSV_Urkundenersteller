@@ -1,5 +1,7 @@
 import datetime
+import json
 import re
+from typing import Any
 
 import chardet
 import pandas as pd
@@ -190,6 +192,18 @@ def parse_winner_input(file: bytes) -> list[Certificate]:
     return certificates
 
 
+def place_centred_text_on_pdf(pdf: Canvas, text: str, x: float, y: float, font_size: int, font: str):
+    pdf.setFontSize(font_size)  # TODO set font
+    pdf.drawCentredString(x, y, text)
+
+
+def get_style_of_text(style: dict[str, Any]) -> dict[str, Any]:
+    font_size: int = style["fontSize"]
+    font: str = style["font"]
+    padding: int = style["padding"]
+    return dict(fontSize=font_size, font=font, padding=padding)
+
+
 def create_pdf_from_certificate(certificate: Certificate) -> bytes:
     """
     Creates a pdf from the given certificate.
@@ -198,6 +212,7 @@ def create_pdf_from_certificate(certificate: Certificate) -> bytes:
     """
 
     resources_path: str = "urkundenersteller/resources"
+    format_resource: str = f"{resources_path}/urkunde_format.json"
 
     pdf: Canvas = Canvas("Urkunde.pdf", pagesize=A4)
 
@@ -206,29 +221,60 @@ def create_pdf_from_certificate(certificate: Certificate) -> bytes:
 
     canvas_width_center: float = canvas_width / 2
 
-    for i in range(0, 7):
-        pdf.drawImage(f"{resources_path}/BSV_Logo.png", i * canvas_width / 7, canvas_height - 90, preserveAspectRatio=True, width=canvas_width / 7, height=canvas_width / 7)
+    format_file = open(format_resource)
+    format_json: dict[str, Any] = json.load(format_file)
+    format_file.close()
 
-    pdf.setFontSize(96)
-    pdf.drawCentredString(canvas_width_center, canvas_height - 186, "Urkunde")
+    vertical_position: float = canvas_height
 
-    pdf.setFontSize(40)
-    pdf.drawCentredString(canvas_width_center, canvas_height - 256, certificate.tournament.name)
+    for key in format_json.keys():
+        element: dict[str, Any] = format_json[key]
+        assert isinstance(element, dict)
+        element_type: str = element["type"]
 
-    pdf.drawCentredString(canvas_width_center, canvas_height - 300, certificate.discipline.ageGroup.name)
+        if element_type == "string":
+            text: str = element["text"]
+            style: dict[str, Any] = get_style_of_text(element["style"])
+            font_size: int = style["fontSize"]
 
-    pdf.setFontSize(16)
-    pdf.drawCentredString(canvas_width_center, 250, f"Ausrichter: {certificate.tournament.organizer.name}")
+            vertical_position -= font_size
+            place_centred_text_on_pdf(pdf, text, canvas_width_center, vertical_position, font_size, style["font"])
 
-    pdf.setFontSize(48)
-    pdf.drawCentredString(canvas_width_center, 200, discipline_to_string(certificate.discipline))
+        if element_type == "f string":
+            element_text: str = element["text"]
+            text: str = eval(f'f"{element_text}"')      # this is a security risk
+            style: dict[str, Any] = get_style_of_text(element["style"])
+            font_size: int = style["fontSize"]
+            font: str = style["font"]
 
-    pdf.drawCentredString(canvas_width_center, 150, f"{certificate.place}. Platz")
+            vertical_position -= font_size + style["padding"]
+            place_centred_text_on_pdf(pdf, text, canvas_width_center, vertical_position, font_size, font)
+            vertical_position -= style["padding"]
 
-    pdf.setFontSize(60)
-    for i, player in enumerate(certificate.players):
-        pdf.drawCentredString(canvas_width_center, 100 + i * 60, player.name)
+        if element_type == "property":
+            element_text: str = element["text"]
+            element_text = "{" + element_text + "}"
+            text: str = eval(f'f"{element_text}"')      # this is a security risk
 
-    pdf.drawImage(f"{resources_path}/player_logo.png", canvas_width_center, 50)
+            style: dict[str, Any] = get_style_of_text(element["style"])
+            font_size: int = style["fontSize"]
+            font: str = style["font"]
+
+            vertical_position -= font_size + style["padding"]
+            place_centred_text_on_pdf(pdf, text, canvas_width_center, vertical_position, font_size, font)
+            vertical_position -= style["padding"]
+
+        if element_type == "image":
+            pass
+        if element_type == "image banner":
+            image_path: str = element["image"]
+            image_path = f"{resources_path}/{image_path}"
+            width: float = canvas_width / int(element["count"])
+            aspect_ratio: (int, int) = element["aspectRatio"].split(":")
+            height: float = width / (int(aspect_ratio[0]) / int(aspect_ratio[1]))
+
+            vertical_position -= height
+            for i in range(int(element["count"])):
+                pdf.drawImage(image_path, i * width, vertical_position, width=width, height=height)
 
     pdf.save()
