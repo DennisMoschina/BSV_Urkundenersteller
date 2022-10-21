@@ -1,5 +1,3 @@
-from reportlab.pdfgen.canvas import Canvas
-
 from urkundenersteller.models import Certificate
 from urkundenersteller.reportlabUI.HStack import HStack
 from urkundenersteller.reportlabUI.Spacer import Spacer
@@ -13,8 +11,8 @@ class CertificateView(View):
         super(CertificateView, self).__init__()
         self.__certificate = certificate
 
-    def view(self, canvas: Canvas):
-        HStack([
+    def view(self) -> View:
+        return HStack([
             Text("Urkunde", 96)
             .padding(30),
             Text(self.__certificate.tournament.name, 40),
@@ -26,5 +24,4 @@ class CertificateView(View):
             .padding(10),
             Text(f"{self.__certificate.place}. Platz", 48)
             .padding(10)
-        ]) \
-            .render_view(canvas)
+        ])

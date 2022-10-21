@@ -10,5 +10,5 @@ class Spacer(View):
         super(Spacer, self).__init__()
         self.__size = size
 
-    def view(self, canvas: Canvas):
+    def build_view(self, canvas: Canvas):
         self.increase_vertical_position(self.__size)

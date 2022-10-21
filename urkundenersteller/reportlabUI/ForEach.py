@@ -15,7 +15,7 @@ class ForEach(View):
         self.__items = items
         self.__create_view = create_view
 
-    def view(self, canvas: Canvas):
+    def build_view(self, canvas: Canvas):
         for item in self.__items:
             view: View = self.__create_view(item)
             view.set_parent(self)

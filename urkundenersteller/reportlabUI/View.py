@@ -10,15 +10,17 @@ class View(ABC):
 
     __padding: float = 0
 
-    @abstractmethod
-    def view(self, canvas: Canvas):
-        pass
+    def view(self) -> 'View':
+        return self
+
+    def build_view(self, canvas: Canvas):
+        return self.view().build_view(canvas)
 
     def render_view(self, canvas: Canvas):
         if self.__parent is not None:
             self.set_vertical_position(self.__parent.get_vertical_position())
         self.increase_vertical_position(self.__padding)
-        self.view(canvas)
+        self.build_view(canvas)
         self.increase_vertical_position(self.__padding)
         if self.__parent is not None:
             self.__parent.set_vertical_position(self.__vertical_position)

@@ -11,7 +11,6 @@ class HStack(View):
         for view in self.__views:
             view.set_parent(self)
 
-    def view(self, canvas: Canvas):
+    def build_view(self, canvas: Canvas):
         for view in self.__views:
             view.render_view(canvas)
-

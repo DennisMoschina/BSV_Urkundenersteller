@@ -14,7 +14,7 @@ class Text(View):
         self.__size = size
         self.__font = font
 
-    def view(self, canvas: Canvas):
+    def build_view(self, canvas: Canvas):
         self.increase_vertical_position(self.__size)
         if self.__font == '':
             canvas.setFontSize(self.__size)
