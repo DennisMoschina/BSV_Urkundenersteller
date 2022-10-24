@@ -30,10 +30,13 @@ def index(request: HttpRequest):
     tournament_date_str: str = data["date"]
 
     club_name = club_name if club_name != '' else "BSV Eggenstein-Leopoldshafen"
-    date: datetime = datetime.strptime(tournament_date_str, "%Y-%m-%d") if tournament_date_str != ''\
+    date: datetime = datetime.strptime(tournament_date_str, "%Y-%m-%d") if tournament_date_str != '' \
         else datetime.now()
 
     logic.create_tournament(tournament_name, date, club_name)
+
+    if "file" not in request.FILES.keys():
+        return render(request, template, {"error": "Es wurde keine Datei hochgeladen."})
 
     csv_file: UploadedFile = request.FILES["file"]
     print(f"csv_file: {csv_file}")

@@ -12,6 +12,13 @@
 
         <h1>Urkundenersteller</h1>
 
+        {% if error %}
+            <div style="color: red">
+                <strong>{{error|safe}}</strong>
+            </div>
+            <br>
+        {% endif %}
+
         <label for="club_name">Ausrichtender Verein:</label>
         <input type="text" name="club_name" placeholder="BSV Eggenstein-Leopoldshafen">
         <br>
