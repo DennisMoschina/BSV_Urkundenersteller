@@ -207,16 +207,35 @@ def get_style_of_text(style: dict[str, Any]) -> dict[str, Any]:
     return dict(fontSize=font_size, font=font, padding=padding)
 
 
-def create_pdf_from_certificate(certificate: Certificate) -> bytes:
+def create_pdf_from_certificate(certificate: Certificate, pdf: Canvas):
     """
-    Creates a pdf from the given certificate.
-    @param certificate: The certificate to create a pdf from.
-    @return: The pdf as bytes.
+    Draws the given certificate on the given pdf.
+    @param certificate: The certificate to draw.
+    @param pdf: The pdf to draw the certificate on.
     """
-
-    pdf: Canvas = Canvas("Urkunde.pdf", pagesize=A4)
 
     certificate_view: View = CertificateView(certificate)
     certificate_view.render_view(pdf)
 
+    pdf.showPage()
+
+
+def create_certificates_as_pdf(certificates: list[Certificate]) -> io.BytesIO:
+    """
+    Creates a pdf from the given certificates.
+    @param certificates: The certificates to create a pdf from.
+    @return: The pdf as bytesIO.
+    """
+
+    buffer: io.BytesIO = io.BytesIO()
+
+    pdf: Canvas = Canvas(buffer, pagesize=A4)
+
+    for certificate in certificates:
+        create_pdf_from_certificate(certificate, pdf)
+
     pdf.save()
+
+    buffer.seek(0)
+
+    return buffer

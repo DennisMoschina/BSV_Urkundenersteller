@@ -1,3 +1,5 @@
+import os
+
 from urkundenersteller.models import Certificate
 from urkundenersteller.reportlabUI.ForEach import ForEach
 from urkundenersteller.reportlabUI.HStack import HStack
@@ -27,5 +29,5 @@ class CertificateView(View):
             Text(f"{self.__certificate.place}. Platz", 48)
             .padding(10),
             ForEach(self.__certificate.players, lambda player: Text(player.name, 48)),
-            Image("../resources/player_logo.png")
+            Image("urkundenersteller/resources/player_logo.png")
         ])
