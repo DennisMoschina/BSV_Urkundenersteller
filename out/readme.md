@@ -1,0 +1,1 @@
+Everything created by this application is stored in this directory
