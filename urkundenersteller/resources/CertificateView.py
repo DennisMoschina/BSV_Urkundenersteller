@@ -1,5 +1,7 @@
 from urkundenersteller.models import Certificate
+from urkundenersteller.reportlabUI.ForEach import ForEach
 from urkundenersteller.reportlabUI.HStack import HStack
+from urkundenersteller.reportlabUI.Image import Image
 from urkundenersteller.reportlabUI.Spacer import Spacer
 from urkundenersteller.reportlabUI.Text import Text
 from urkundenersteller.reportlabUI.View import View
@@ -23,5 +25,7 @@ class CertificateView(View):
             Text(self.__certificate.discipline.__str__(), 48)
             .padding(10),
             Text(f"{self.__certificate.place}. Platz", 48)
-            .padding(10)
+            .padding(10),
+            ForEach(self.__certificate.players, lambda player: Text(player.name, 48)),
+            Image("../resources/player_logo.png")
         ])

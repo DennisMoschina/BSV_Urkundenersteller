@@ -214,9 +214,6 @@ def create_pdf_from_certificate(certificate: Certificate) -> bytes:
     @return: The pdf as bytes.
     """
 
-    resources_path: str = "urkundenersteller/resources"
-    format_resource: str = f"{resources_path}/urkunde_format.json"
-
     pdf: Canvas = Canvas("Urkunde.pdf", pagesize=A4)
 
     certificate_view: View = CertificateView(certificate)
