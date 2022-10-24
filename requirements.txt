@@ -1,0 +1,4 @@
+Django>=4.0
+reportlab>=3.6
+pandas>=1.5
+chardet>=5
