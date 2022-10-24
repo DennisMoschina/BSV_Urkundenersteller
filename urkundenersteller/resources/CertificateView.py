@@ -1,6 +1,6 @@
 from urkundenersteller.models import Certificate
 from urkundenersteller.reportlabUI.ForEach import ForEach
-from urkundenersteller.reportlabUI.HStack import HStack
+from urkundenersteller.reportlabUI.VStack import VStack
 from urkundenersteller.reportlabUI.Image import Image
 from urkundenersteller.reportlabUI.Spacer import Spacer
 from urkundenersteller.reportlabUI.Text import Text
@@ -14,7 +14,7 @@ class CertificateView(View):
         self.__certificate = certificate
 
     def view(self) -> View:
-        return HStack([
+        return VStack([
             Text("Urkunde", 96)
             .padding(30),
             Text(self.__certificate.tournament.name, 40),
