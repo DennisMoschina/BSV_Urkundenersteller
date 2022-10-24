@@ -239,3 +239,14 @@ def create_certificates_as_pdf(certificates: list[Certificate]) -> io.BytesIO:
     buffer.seek(0)
 
     return buffer
+
+
+def save_as_pdf(pdf: io.BytesIO, file_name: str):
+    """
+    Saves the given pdf as file.
+    @param pdf: The pdf to save.
+    @param file_name: The name of the file to save the pdf as.
+    """
+    with open(file_name, "wb") as f:
+        f.write(pdf.read())
+    f.close()

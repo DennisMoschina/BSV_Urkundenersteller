@@ -6,4 +6,5 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('urkunden', views.previously_created_certificates, name='urkunden')
 ]

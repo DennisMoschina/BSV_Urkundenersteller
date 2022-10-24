@@ -1,16 +1,19 @@
 import io
+import os.path
 from datetime import datetime
 
 import numpy as np
 from django.contrib import messages
 from django.core.files.uploadedfile import UploadedFile
 from django.http import FileResponse
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest
 
 from urkundenersteller import logic
 from urkundenersteller.logic import create_certificates_as_pdf
 from urkundenersteller.logic import create_pdf_from_certificate
+from urkundenersteller.logic import save_as_pdf
 from urkundenersteller.models import Certificate
 
 
@@ -45,4 +48,17 @@ def index(request: HttpRequest):
     read_file = csv_file.read()
     certificates: list[Certificate] = logic.parse_winner_input(read_file)
 
-    return FileResponse(create_certificates_as_pdf(certificates), as_attachment=True, filename="certificates.pdf")
+    certificates_buffer: io.BytesIO = create_certificates_as_pdf(certificates)
+
+    save_as_pdf(certificates_buffer, "out/urkunden.pdf")
+    certificates_buffer.seek(0)
+
+    return redirect("urkunden")
+
+
+def previously_created_certificates(request: HttpRequest):
+    if os.path.exists("out/urkunden.pdf"):
+        with open("out/urkunden.pdf", "rb") as f:
+            return FileResponse(io.BytesIO(f.read()), as_attachment=False, filename="urkunden.pdf")
+    else:
+        return HttpResponse("Bisher wurden keine Urkunden erstellt.")
