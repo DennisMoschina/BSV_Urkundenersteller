@@ -1,44 +1,40 @@
 from abc import ABC
-from abc import abstractmethod
 
 from reportlab.pdfgen.canvas import Canvas
 
+from urkundenersteller.reportlabUI.Frame import Frame
+
 
 class View(ABC):
-    __vertical_position: float = 0
-    __parent: 'View' = None
-
     __padding: float = 0
 
     def view(self) -> 'View':
         return self
 
-    def build_view(self, canvas: Canvas):
+    def build_view(self, canvas: Canvas,
+                   top_left_corner: tuple[float, float] = (0, 0),
+                   frame: Frame = Frame()) -> tuple[float, float]:
         return self.view().build_view(canvas)
 
-    def render_view(self, canvas: Canvas):
-        if self.__parent is not None:
-            self.set_vertical_position(self.__parent.get_vertical_position())
-        self.increase_vertical_position(self.__padding)
-        self.build_view(canvas)
-        self.increase_vertical_position(self.__padding)
-        if self.__parent is not None:
-            self.__parent.set_vertical_position(self.__vertical_position)
+    def render_view(self, canvas: Canvas,
+                    top_left_corner: tuple[float, float] = (0, 0),
+                    frame: Frame = Frame()) -> tuple[float, float]:
+        view: View = self.view()
 
-    def set_vertical_position(self, vertical_position: float):
-        self.__vertical_position = vertical_position
+        top_left_corner = (top_left_corner[0], top_left_corner[1] + self.__padding)
+        if view is self:
+            bottom_right_corner = self.build_view(canvas, top_left_corner, frame)
+        else:
+            bottom_right_corner = self.view().render_view(canvas, top_left_corner, frame)
 
-    def get_vertical_position(self) -> float:
-        return self.__vertical_position
+        bottom_right_corner = (bottom_right_corner[0], bottom_right_corner[1] + self.__padding)
+        return bottom_right_corner
 
-    def increase_vertical_position(self, amount: float):
-        self.__vertical_position += amount
-
-    def set_parent(self, parent: 'View'):
-        self.__parent = parent
-
-    def get_parent(self) -> 'View':
-        return self.__parent
+    def get_preferred_size(self) -> tuple[float, float]:
+        size = self.view().get_preferred_size()
+        for i in range(2):
+            size[i] += 2 * self.__padding
+        return size
 
     # View modifiers
 
