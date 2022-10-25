@@ -214,7 +214,7 @@ def create_pdf_from_certificate(certificate: Certificate) -> bytes:
     @return: The pdf as bytes.
     """
 
-    pdf: Canvas = Canvas("Urkunde.pdf", pagesize=A4)
+    pdf: Canvas = Canvas("Urkunde.pdf", pagesize=A4, bottomup=0)
 
     certificate_view: View = CertificateView(certificate)
     certificate_view.render_view(pdf)
