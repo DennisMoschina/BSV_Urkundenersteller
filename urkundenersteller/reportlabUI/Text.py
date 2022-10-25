@@ -31,6 +31,9 @@ class Text(View):
     def get_text_width(self) -> float:
         return stringWidth(self.__text, self.__font if self.__font != '' else 'Courier', self.__size)
 
+    def get_min_size(self) -> tuple[float, float]:
+        return self.get_text_width(), self.__size
+
     def build_view(self, canvas: Canvas,
                    top_left_corner: tuple[float, float] = (0, 0),
                    frame: Frame = Frame()) -> tuple[float, float]:

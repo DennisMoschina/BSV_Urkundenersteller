@@ -36,6 +36,12 @@ class View(ABC):
             size[i] += 2 * self.__padding
         return size
 
+    def get_min_size(self) -> tuple[float, float]:
+        size = self.view().get_min_size()
+        for i in range(2):
+            size[i] += 2 * self.__padding
+        return size
+
     # View modifiers
 
     def padding(self, amount: float = 10) -> 'View':
