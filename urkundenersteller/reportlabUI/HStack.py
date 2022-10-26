@@ -14,6 +14,11 @@ class HStack(Stack):
         super(HStack, self).__init__(views)
         self.__views: list[View] = views
 
+    @classmethod
+    def create(cls, items: list, create_view: Callable[[any], View]) -> 'HStack':
+        views = [create_view(item) for item in items]
+        return HStack(views)
+
     def build_view(self, canvas: Canvas,
                    top_left_corner: tuple[float, float] = (0, 0),
                    frame: Frame = Frame()) -> tuple[float, float]:
@@ -26,7 +31,10 @@ class HStack(Stack):
 
         return bottom_right_corner
 
-    @classmethod
-    def create(cls, items: list, create_view: Callable[[any], View]) -> 'HStack':
-        views = [create_view(item) for item in items]
-        return HStack(views)
+    def get_min_size(self) -> tuple[float, float]:
+        min_width = 0
+        min_height = 0
+        for view in self.__views:
+            min_width += view.get_min_size()[0]
+            min_height = max(min_height, view.get_min_size()[1])
+        return min_width, min_height
