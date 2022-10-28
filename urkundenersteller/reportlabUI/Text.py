@@ -55,7 +55,6 @@ class Text(View):
         if frame.height[1] == FrameType.FIXED:
             height = frame.height[0]
         elif frame.height[1] == FrameType.MINIMUM:
-            # TODO: implement
             height = max(height, frame.height[0])
         elif frame.height[1] == FrameType.MAXIMUM:
             # TODO: implement

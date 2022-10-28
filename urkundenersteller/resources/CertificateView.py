@@ -30,7 +30,7 @@ class CertificateView(View):
             Text(f"{self.__certificate.place}. Platz", 48)
             .padding(10),
             VStack.create(self.__certificate.players, lambda player: Text(player.name, 48).padding(10))
-            .frame(frame=Frame(height=(236, FrameType.FIXED))),
+            .frame(frame=Frame(height=(136, FrameType.FIXED))),
             HStack([
                 VStack([
                     Spacer(150),

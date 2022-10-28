@@ -77,6 +77,18 @@ class MyTestCase(unittest.TestCase):
         x, y = view.render_view(self.pdf, (0, 0))
         self.assertEqual(view_height, y, "wrong position")
 
+    def test_vstack_frame(self):
+        height: float = 100
+
+        view1 = Text("Test Frame with VStack")
+        view2 = Text("of Texts")
+
+        stack = VStack([view1, view2])
+        stack.frame(frame=Frame(height=(height, FrameType.FIXED)))
+
+        x, y = stack.render_view(self.pdf, (0, 0))
+        self.assertEqual(y, height, "wrong position")
+
 
 if __name__ == '__main__':
     unittest.main()

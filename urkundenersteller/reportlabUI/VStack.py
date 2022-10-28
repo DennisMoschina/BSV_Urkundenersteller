@@ -3,6 +3,7 @@ from typing import Callable
 from reportlab.pdfgen.canvas import Canvas
 
 from urkundenersteller.reportlabUI.Frame import Frame
+from urkundenersteller.reportlabUI.Frame import FrameType
 from urkundenersteller.reportlabUI.Stack import Stack
 from urkundenersteller.reportlabUI.View import View
 
@@ -23,9 +24,28 @@ class VStack(Stack):
                    frame: Frame = Frame()) -> tuple[float, float]:
         # TODO: use Frame
 
+        height: float = self.get_preferred_size()[1]
+
+        if frame.height[1] is FrameType.FIXED:
+            height = frame.height[0]
+        elif frame.height[1] is FrameType.MINIMUM:
+            height = max(height, frame.height[0])
+        elif frame.height[1] is FrameType.MAXIMUM:
+            # TODO: add error handling
+            pass
+
         bottom_right_corner = top_left_corner
         for view in self.__views:
-            bottom_right_corner = view.render_view(canvas, (top_left_corner[0], bottom_right_corner[1]))
+            # TODO: use dynamic frame so that each view gets the correct size
+            top_left_corner = (top_left_corner[0], bottom_right_corner[1])
+            if frame == Frame():
+                bottom_right_corner = view.render_view(canvas, top_left_corner)
+            else:
+                bottom_right_corner = view.render_view(canvas,
+                                                       top_left_corner=top_left_corner,
+                                                       frame=Frame(
+                                                           height=(height / len(self.__views), FrameType.FIXED)
+                                                       ))
 
         return bottom_right_corner
 

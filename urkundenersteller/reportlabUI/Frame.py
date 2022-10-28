@@ -16,3 +16,6 @@ class Frame:
                  width: (float, FrameType) = (0, FrameType.MINIMUM)):
         self.height = height
         self.width = width
+
+    def __eq__(self, other):
+        return self.height == other.height and self.width == other.width
