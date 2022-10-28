@@ -123,15 +123,14 @@ def create_certificate(discipline: Discipline, data_frame: pd.DataFrame) -> Cert
            discipline.disciplineType != DisciplineType.SINGLE and len(data_frame) == 2
 
     place: int = parse_place(data_frame.iloc[0]["Pos."])
-    club: Club = parse_club(data_frame.iloc[0]["Verein"])
-    player: Player = parse_player(data_frame.iloc[0]["Name"], club)
+    players: list[Player] = list(
+        map(lambda i: parse_player(data_frame.iloc[i]["Name"], parse_club(data_frame.iloc[i]["Verein"])),
+            range(len(data_frame))))
 
-    # TODO: make work for doubles and mixed
-    # TODO: add real tournament
-    return Certificate(discipline=discipline, place=place, players=[player], tournament=tournament)
+    return Certificate(discipline=discipline, place=place, players=players, tournament=tournament)
 
 
-def create_certificats_for_discipline(discipline: Discipline, data_frame: pd.DataFrame) -> list[Certificate]:
+def create_certificates_for_discipline(discipline: Discipline, data_frame: pd.DataFrame) -> list[Certificate]:
     if discipline.disciplineType == DisciplineType.SINGLE:
         step_size: int = 1
     else:
@@ -190,10 +189,9 @@ def parse_winner_input(file: bytes) -> list[Certificate]:
 
     # iterate over disciplines and create certificates from their dataframes
     for discipline, data_frame in discipline_data_frame_map.items():
-        certificates.extend(create_certificats_for_discipline(discipline, data_frame))
+        certificates.extend(create_certificates_for_discipline(discipline, data_frame))
 
     return certificates
-
 
 
 def get_style_of_text(style: dict[str, Any]) -> dict[str, Any]:
