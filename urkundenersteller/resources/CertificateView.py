@@ -1,8 +1,8 @@
-import os
-
 from urkundenersteller.models import Certificate
-from urkundenersteller.reportlabUI.ForEach import ForEach
+from urkundenersteller.reportlabUI.Frame import Frame
+from urkundenersteller.reportlabUI.Frame import FrameType
 from urkundenersteller.reportlabUI.HStack import HStack
+from urkundenersteller.reportlabUI.VStack import VStack
 from urkundenersteller.reportlabUI.Image import Image
 from urkundenersteller.reportlabUI.Spacer import Spacer
 from urkundenersteller.reportlabUI.Text import Text
@@ -16,9 +16,10 @@ class CertificateView(View):
         self.__certificate = certificate
 
     def view(self) -> View:
-        return HStack([
+        return VStack([
+            HStack.create(range(7), lambda i: Image("../resources/BSV_Logo.png", width=85, height=93)),
             Text("Urkunde", 96)
-            .padding(30),
+            .padding(20),
             Text(self.__certificate.tournament.name, 40),
             Text(self.__certificate.discipline.ageGroup.name, 40)
             .padding(10),
@@ -28,6 +29,17 @@ class CertificateView(View):
             .padding(10),
             Text(f"{self.__certificate.place}. Platz", 48)
             .padding(10),
-            ForEach(self.__certificate.players, lambda player: Text(player.name, 48)),
-            Image("urkundenersteller/resources/player_logo.png")
+            VStack.create(self.__certificate.players, lambda player: Text(player.name, 48).padding(10))
+            .frame(frame=Frame(height=(136, FrameType.FIXED))),
+            HStack([
+                VStack([
+                    Spacer(150),
+                    HStack([
+                        Text("Eggenstein,", 12),
+                        Text(self.__certificate.tournament.date.strftime("%d.%m.%Y"), 12),
+                        Text("_____________________________________", 12)
+                    ])
+                ]),
+                Image("../resources/player_logo.png")
+            ])
         ])
