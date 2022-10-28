@@ -214,6 +214,17 @@ def create_pdf_from_certificate(certificate: Certificate, pdf: Canvas):
     @param pdf: The pdf to draw the certificate on.
     """
 
+    if certificate.discipline.disciplineType in [DisciplineType.DOUBLE, DisciplineType.MIXED]:
+        view_player1: View = CertificateView(certificate)
+        view_player1.render_view(pdf)
+        pdf.showPage()
+        certificate.players.reverse()
+        view_player2: View = CertificateView(certificate)
+        view_player2.render_view(pdf)
+        pdf.showPage()
+
+        return
+
     certificate_view: View = CertificateView(certificate)
     certificate_view.render_view(pdf)
 
