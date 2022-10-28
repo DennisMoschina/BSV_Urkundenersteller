@@ -27,7 +27,12 @@ class MyTestCase(unittest.TestCase):
             tournament=Tournament(name="Testturnier", date=datetime.now(), organizer=Club(name="Testverein")),
             discipline=Discipline(discipline_type=DisciplineType.DOUBLE, age_group=AgeGroup.U19, gender=Gender.MALE),
             place=1,
-            players=[Player(name="Testspieler 1", club=Club(name="Testverein")), Player(name="Testspieler 2", club=Club(name="Testverein"))]
+            players=[
+                Player(name="Testspieler 1",
+                       club=Club(name="Testverein")),
+                Player(name="Testspieler 2",
+                       club=Club(name="Testverein"))
+            ]
         )
         create_pdf_from_certificate(certificate)
 
