@@ -195,10 +195,6 @@ def parse_winner_input(file: bytes) -> list[Certificate]:
     return certificates
 
 
-def place_centred_text_on_pdf(pdf: Canvas, text: str, x: float, y: float, font_size: int, font: str):
-    pdf.setFontSize(font_size)  # TODO set font
-    pdf.drawCentredString(x, y, text)
-
 
 def get_style_of_text(style: dict[str, Any]) -> dict[str, Any]:
     font_size: int = style["fontSize"]
