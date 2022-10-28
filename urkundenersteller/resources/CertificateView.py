@@ -1,4 +1,6 @@
 from urkundenersteller.models import Certificate
+from urkundenersteller.reportlabUI.Frame import Frame
+from urkundenersteller.reportlabUI.Frame import FrameType
 from urkundenersteller.reportlabUI.HStack import HStack
 from urkundenersteller.reportlabUI.VStack import VStack
 from urkundenersteller.reportlabUI.Image import Image
@@ -27,7 +29,8 @@ class CertificateView(View):
             .padding(10),
             Text(f"{self.__certificate.place}. Platz", 48)
             .padding(10),
-            VStack.create(self.__certificate.players, lambda player: Text(player.name, 48).padding(10)),
+            VStack.create(self.__certificate.players, lambda player: Text(player.name, 48).padding(10))
+            .frame(frame=Frame(height=(236, FrameType.FIXED))),
             HStack([
                 VStack([
                     Spacer(150),

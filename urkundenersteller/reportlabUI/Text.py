@@ -31,7 +31,7 @@ class Text(View):
     def get_text_width(self) -> float:
         return stringWidth(self.__text, self.__font if self.__font != '' else 'Courier', self.__size)
 
-    def get_min_size(self) -> tuple[float, float]:
+    def get_content_size(self) -> tuple[float, float]:
         return self.get_text_width(), self.__size
 
     def build_view(self, canvas: Canvas,
@@ -50,6 +50,21 @@ class Text(View):
 
         # TODO: make work for left align and right align
 
-        canvas.drawCentredString(top_left_corner[0] + (width / 2), top_left_corner[1] + self.__size, self.__text)
-        return top_left_corner[0] + width, top_left_corner[1] + self.__size
+        height: float = self.get_preferred_size()[1]
 
+        if frame.height[1] == FrameType.FIXED:
+            height = frame.height[0]
+        elif frame.height[1] == FrameType.MINIMUM:
+            # TODO: implement
+            height = max(height, frame.height[0])
+        elif frame.height[1] == FrameType.MAXIMUM:
+            # TODO: implement
+            pass
+
+        extra_padding: float = (height - self.get_preferred_size()[1]) / 2
+
+        x_pos: float = top_left_corner[0] + (width / 2)
+        y_pos: float = top_left_corner[1] + extra_padding + self.__size
+
+        canvas.drawCentredString(x_pos, y_pos, self.__text)
+        return top_left_corner[0] + width, top_left_corner[1] + self.__size + extra_padding * 2

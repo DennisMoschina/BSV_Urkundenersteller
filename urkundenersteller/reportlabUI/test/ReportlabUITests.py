@@ -3,6 +3,8 @@ import unittest
 
 from reportlab.pdfgen.canvas import Canvas
 
+from urkundenersteller.reportlabUI.Frame import Frame
+from urkundenersteller.reportlabUI.Frame import FrameType
 from urkundenersteller.reportlabUI.HStack import HStack
 from urkundenersteller.reportlabUI.Image import Image
 from urkundenersteller.reportlabUI.Text import Text
@@ -55,6 +57,25 @@ class MyTestCase(unittest.TestCase):
     def test_image_default_size(self):
         view = Image("resources/player_logo.png")
         view.render_view(self.pdf, (0, -466))
+
+    def test_text_frame(self):
+        view = Text("Test Frame with Text")
+        view.frame(frame=Frame(height=(100, FrameType.FIXED)))
+        x, y = view.render_view(self.pdf, (0, 0))
+        self.assertEqual(y, 100)
+
+    def test_text_size(self):
+        size = 50
+        padding = 10
+        view = Text("Hello World", size=size)
+        view.padding(padding)
+
+        view_width, view_height = view.get_preferred_size()
+
+        self.assertEqual(view_height, size + 2 * padding, "wrong view height")
+
+        x, y = view.render_view(self.pdf, (0, 0))
+        self.assertEqual(view_height, y, "wrong position")
 
 
 if __name__ == '__main__':
