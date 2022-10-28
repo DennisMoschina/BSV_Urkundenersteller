@@ -17,7 +17,7 @@ class CertificateView(View):
 
     def view(self) -> View:
         return VStack([
-            HStack.create(range(7), lambda i: Image("../resources/BSV_Logo.png", width=85, height=93)),
+            HStack.create(range(7), lambda i: Image("urkundenersteller/resources/BSV_Logo.png", width=85, height=93)),
             Text("Urkunde", 96)
             .padding(20),
             Text(self.__certificate.tournament.name, 40),
@@ -40,6 +40,6 @@ class CertificateView(View):
                         Text("_____________________________________", 12)
                     ])
                 ]),
-                Image("../resources/player_logo.png")
+                Image("urkundenersteller/resources/player_logo.png")
             ])
         ])
