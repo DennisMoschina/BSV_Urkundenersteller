@@ -82,9 +82,16 @@ def parse_discipline(discipline_str: str) -> Discipline:
     """
     pattern = re.compile(discipline_regex)
     match = pattern.match(discipline_str)
-    dis_type: DisciplineType = parse_discipline_type(match.group("dis_type"))
+    dis_type_str = match.group("dis_type")
+    if dis_type_str == None:
+        dis_type_str = "MX"
+    dis_type: DisciplineType = parse_discipline_type(dis_type_str)
+
     age_group: AgeGroup = parse_age_group(match.group("age_group"))
-    gender: Gender = parse_gender(match.group("gender"))
+    if dis_type == DisciplineType.MIXED:
+        gender = Gender.MALE
+    else:
+        gender: Gender = parse_gender(match.group("gender"))
 
     return Discipline(age_group=age_group, discipline_type=dis_type, gender=gender)
 

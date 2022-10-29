@@ -21,7 +21,7 @@ class CertificateView(View):
             Text("Urkunde", 96)
             .padding(20),
             Text(self.__certificate.tournament.name, 40),
-            Text(self.__certificate.discipline.ageGroup.name, 40)
+            Text("U13 - U19", 40)
             .padding(10),
             Text(f"Ausrichter: {self.__certificate.tournament.organizer.name}", 16),
             Spacer(10),
