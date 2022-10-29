@@ -25,6 +25,7 @@ class CreateCertificatesTest(unittest.TestCase):
         for certificate in certificates:
             self.assertEqual(certificate.discipline.disciplineType, DisciplineType.DOUBLE)
             self.assertEqual(2, len(certificate.players))
+            print(certificate.players)
 
 
 if __name__ == '__main__':

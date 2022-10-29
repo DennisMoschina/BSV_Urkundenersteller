@@ -119,27 +119,18 @@ def parse_place(place_str: str) -> int:
 
 
 def create_certificate(discipline: Discipline, data_frame: pd.DataFrame) -> Certificate:
-    assert discipline.disciplineType == DisciplineType.SINGLE and len(data_frame) == 1 or \
-           discipline.disciplineType != DisciplineType.SINGLE and len(data_frame) == 2
-
     place: int = parse_place(data_frame.iloc[0]["Pos."])
     players: list[Player] = list(
-        map(lambda i: parse_player(data_frame.iloc[i]["Name"], parse_club(data_frame.iloc[i]["Verein"])),
-            range(len(data_frame))))
+        map(lambda name: parse_player(name, parse_club(data_frame.iloc[0]["Verein"])),
+            data_frame.iloc[0]["Name"].split("+")))
 
     return Certificate(discipline=discipline, place=place, players=players, tournament=tournament)
 
 
 def create_certificates_for_discipline(discipline: Discipline, data_frame: pd.DataFrame) -> list[Certificate]:
-    if discipline.disciplineType == DisciplineType.SINGLE:
-        step_size: int = 1
-    else:
-        assert len(data_frame) % 2 == 0
-        step_size: int = 2
-
     certificates: list[Certificate] = []
-    for i in range(0, len(data_frame), step_size):
-        certificates.append(create_certificate(discipline, data_frame.iloc[i:i + step_size]))
+    for i in range(0, len(data_frame)):
+        certificates.append(create_certificate(discipline, data_frame.iloc[i:i + 1]))
     return certificates
 
 
